@@ -9,6 +9,7 @@ import {
 import Users from './user/pages/Users';
 import NewPlace from './places/pages/NewPlace';
 import MainNavigation from './shared/components/Navigation/MainNavigation';
+import Footer from './shared/components/UIElements/Footer';
 
 const App = () => {
   return (

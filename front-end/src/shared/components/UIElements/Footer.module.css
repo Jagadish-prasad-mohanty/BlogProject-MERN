@@ -1,0 +1,93 @@
+.Footer{
+    margin-top: 5rem;
+    background-color: rgb(3, 99, 83);
+    color: white;
+    width: 100%;
+    padding-top: 0.2rem;
+    text-align: center;
+}
+
+/* .FooterHead{
+    box-shadow:  0 2px 4px white;
+} */
+.Footer h2{
+
+    box-shadow:  0 4px 5px white;
+    display: inline-block;
+    padding: 0.2rem;
+    box-shadow: 0 ;
+}
+.FooterMain{
+    width: 100%;
+    display: flex;
+    align-items: top;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    /* height: 22vh; */
+}
+
+.FooterTag{
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    margin:0.5rem;
+}
+.FooterTag i{
+    color: white;
+    font-size: 1.3rem;
+    transition: all 0.3s ease-out;
+    cursor: pointer;
+}
+.Footer span{
+    color: black;
+}
+.FooterTag i:hover{
+    transform: scale(1.2);
+
+}
+hr{
+    height:0.2rem;
+    margin-bottom: 0.5rem;
+}
+
+
+.FooterSec{
+    
+    /* text-align: ; */
+    display:flex;
+    gap: 0.3rem;
+    flex-flow: column;
+    align-items: center;
+    justify-content: top;
+    height:18vh;
+
+}
+
+.FooterList{
+    /* border: 1px red solid; */
+    list-style: none;
+    /* text-align: left; */
+    
+    font-weight: bold;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-flow: column;
+    gap:0.5rem;
+}
+.FooterList i{
+    display: block;
+}
+.FooterCopyRight{
+    margin-top: 0.5rem;
+    padding: 0.5px;
+    background: rgb(1, 49, 38);
+}
+.FooterCopyRight p{
+    font-size: 0.8rem;
+}
+.FooterCopyRight i{
+    color: white;
+}
