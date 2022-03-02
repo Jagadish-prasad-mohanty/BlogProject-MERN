@@ -21,8 +21,8 @@ const DEMO_PLACES=[
         desciption:"One of tge most famous temple of india",
         imageURL:"https://upload.wikimedia.org/wikipedia/commons/8/82/%E0%AC%9C%E0%AC%97%E0%AC%A8%E0%AD%8D%E0%AC%A8%E0%AC%BE%E0%AC%A5_%E0%AC%AE%E0%AC%A8%E0%AD%8D%E0%AC%A6%E0%AC%BF%E0%AC%B0%2C_%E0%AC%B9%E0%AC%BE%E0%AC%87%E0%AC%A6%E0%AD%8D%E0%AC%B0%E0%AC%BE%E0%AC%AC%E0%AC%BE%E0%AC%A6.jpg",
         location:{
-            lat:19.941052,
-            lng:85.6711604
+            lat:19.8048196,
+            lng:85.8157301
         },
         creator:"u1",
     },

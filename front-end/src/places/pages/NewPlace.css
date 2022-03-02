@@ -1,0 +1,12 @@
+.form{
+    width: 30rem;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin: auto;
+    border-radius: 0.5rem;
+    background-color: rgb(240, 241, 240);
+    flex-flow: column;
+}
