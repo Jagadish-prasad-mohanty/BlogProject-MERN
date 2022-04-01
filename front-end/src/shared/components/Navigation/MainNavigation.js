@@ -11,16 +11,18 @@ const MainNavigation = props => {
   const [drawerIsOpen,setDrawerIsOpen]=useState(false);
 
   const openDrawer=()=>{
+    console.log("Drawer opened");
     setDrawerIsOpen(true)
   }
   const closeDrawer=()=>{
+    console.log("Drawer closed");
     setDrawerIsOpen(false)
   }
   return (
     <React.Fragment>
-      <SideDrawer show={drawerIsOpen}>
+      <SideDrawer show={drawerIsOpen} onClick={closeDrawer}>
         <nav className="main-navigation__drawer-nav">
-          <NavLinks />
+          <NavLinks/>
         </nav>
       </SideDrawer>
       
