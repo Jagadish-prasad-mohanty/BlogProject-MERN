@@ -1,12 +1,14 @@
 .modal {
     z-index: 100;
     position: fixed;
+    /* padding: 0.3rem; */
     top: 18vh;
     left: 10%;
     width: 80%;
     background: white;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
     border-radius: 8px;
+    overflow: hidden;
   }
   
   .modal__header {
@@ -38,6 +40,10 @@
   .modal-enter {
     transform: translateY(-10rem);
     opacity: 0;
+  }
+
+  .modal form{
+    padding:0.2rem;
   }
   
   .modal-enter-active {

@@ -16,6 +16,7 @@ const Button = props => {
     );
   }
   if (props.to) {
+    console.log("Button to");
     return (
       <Link
         to={props.to}
