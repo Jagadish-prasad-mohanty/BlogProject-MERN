@@ -39,6 +39,30 @@ const getPlaceById=(req,res,next)=>{
     }
     res.json({place:place});
 }
+const patchPlaceById=(req,res,next)=>{
+    console.log("Get place request from places.");
+    const placeId=req.params.pid;
+    const {title,description}= req.body;
+    const place=DEMO_PLACES.find(place=>place.id===placeId);
+    if(!place){
+        const error= new HttpError("Could not find the place",404);
+        throw error;
+    }
+    const updatedPlace={...place};
+    if (title)
+        updatedPlace.title=title;
+    if (description)
+        updatedPlace.desciption=description;
+
+    DEMO_PLACES.map(item=>{
+        if (item.id===placeId){
+            return updatedPlace;
+        }else{
+            return item;
+        }
+    })
+    res.json({place:updatedPlace});
+}
 
 const getPlacesByUserId= (req,res,next)=>{
     console.log("Get user places request from places.");
@@ -70,5 +94,6 @@ const postCreatePlace=(req,res,next)=>{
 }
 
 exports.getPlaceById=getPlaceById;
+exports.patchPlaceById=patchPlaceById;
 exports.getPlacesByUserId=getPlacesByUserId;
 exports.postCreatePlace=postCreatePlace;

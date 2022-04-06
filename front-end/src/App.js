@@ -12,6 +12,7 @@ import MainNavigation from './shared/components/Navigation/MainNavigation';
 // import Footer from './shared/components/UIElements/Footer';
 import UserPlaces from './places/pages/UserPlaces';
 import UpdatePlace from './places/pages/UpdatePlace';
+import Authnticate from './user/pages/Authnticate';
 
 const App = () => {
   return (
@@ -30,6 +31,9 @@ const App = () => {
           </Route>
           <Route path="/:userId/places">
             <UserPlaces/>
+          </Route>
+          <Route path="/auth">
+            <Authnticate/>
           </Route>
           <Redirect to="/" />
         </Switch>
