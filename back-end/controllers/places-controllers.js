@@ -1,13 +1,13 @@
 const uuid=require('uuid/v4');
 const HttpError= require('../models/http-error');
 
-const DEMO_PLACES=[
+let DEMO_PLACES=[
     {
         id:'p2',
         title:'Lingaraja Temple',
         address:'Lingaraj Ample, Lingaraj Temple Rd, Old Town, Bhubaneswar, Odisha 751002',
         imageURL:"https://lh5.googleusercontent.com/p/AF1QipMIQe3sxO0i4GxrzhEAtD6t9ihVTvoGeXJo2gCJ=w408-h272-k-no",
-        desciption:"One of tge most famous temple of india",
+        description:"One of tge most famous temple of india",
         location:{
             lat:20.238299,
             lng:85.8315642
@@ -18,7 +18,7 @@ const DEMO_PLACES=[
         id:'p1',
         title:'Jagarnath Temple',
         address:'WMRF+C89, Odisha 752014',
-        desciption:"One of tge most famous temple of india",
+        description:"One of tge most famous temple of india",
         imageURL:"https://upload.wikimedia.org/wikipedia/commons/8/82/%E0%AC%9C%E0%AC%97%E0%AC%A8%E0%AD%8D%E0%AC%A8%E0%AC%BE%E0%AC%A5_%E0%AC%AE%E0%AC%A8%E0%AD%8D%E0%AC%A6%E0%AC%BF%E0%AC%B0%2C_%E0%AC%B9%E0%AC%BE%E0%AC%87%E0%AC%A6%E0%AD%8D%E0%AC%B0%E0%AC%BE%E0%AC%AC%E0%AC%BE%E0%AC%A6.jpg",
         location:{
             lat:19.8048196,
@@ -39,7 +39,7 @@ const getPlaceById=(req,res,next)=>{
     }
     res.json({place:place});
 }
-const patchPlaceById=(req,res,next)=>{
+const patchUpdatePlaceById=(req,res,next)=>{
     console.log("Get place request from places.");
     const placeId=req.params.pid;
     const {title,description}= req.body;
@@ -52,16 +52,23 @@ const patchPlaceById=(req,res,next)=>{
     if (title)
         updatedPlace.title=title;
     if (description)
-        updatedPlace.desciption=description;
+        updatedPlace.description=description;
+    
 
-    DEMO_PLACES.map(item=>{
-        if (item.id===placeId){
-            return updatedPlace;
-        }else{
-            return item;
-        }
-    })
-    res.json({place:updatedPlace});
+    const index=DEMO_PLACES.findIndex((place)=>place.id==placeId)
+    console.log(index,updatedPlace);
+    if (index!==-1)
+    DEMO_PLACES[index]=updatedPlace
+    console.log(DEMO_PLACES);
+    res.status(200).json({place:updatedPlace});
+}
+const patchDeletePlaceById=(req,res,next)=>{
+    console.log("Get place request from places.");
+    const placeId=req.params.pid;
+    
+    DEMO_PLACES=DEMO_PLACES.filter((place)=>place.id!==placeId);
+    console.log(DEMO_PLACES);
+    res.status(200).json({message:"Deletion Done"});
 }
 
 const getPlacesByUserId= (req,res,next)=>{
@@ -94,6 +101,7 @@ const postCreatePlace=(req,res,next)=>{
 }
 
 exports.getPlaceById=getPlaceById;
-exports.patchPlaceById=patchPlaceById;
+exports.patchUpdatePlaceById=patchUpdatePlaceById;
+exports.patchDeletePlaceById=patchDeletePlaceById;
 exports.getPlacesByUserId=getPlacesByUserId;
 exports.postCreatePlace=postCreatePlace;
