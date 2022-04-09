@@ -6,6 +6,8 @@ import {VALIDATOR_MINLENGTH ,VALIDATOR_EMAIL, VALIDATOR_REQUIRE} from '../../sha
 import Card from '../../shared/components/UIElements/Card';
 import useFormHook from '../../shared/hook/form-hook';
 
+import "./Authenticate.css";
+
 function Authnticate() {
     const [isSignIn,setIsSignIn]=useState(false);
 
@@ -28,7 +30,7 @@ function Authnticate() {
         });
       }
   return (
-      <Card>
+      <Card className="auth">
 
     <form method='POST' onSubmit={onFormSubmitHandler} style={{marginBottom:"0.5rem"}}>
         <h2>{isSignIn?"SignIn Required":"SignUp Required"}</h2>

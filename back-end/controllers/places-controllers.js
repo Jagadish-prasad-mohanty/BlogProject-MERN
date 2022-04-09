@@ -1,5 +1,7 @@
 const uuid=require('uuid/v4');
 const HttpError= require('../models/http-error');
+const {validationResult}=require('express-validator');
+const findGeoCode = require('../util/location');
 
 let DEMO_PLACES=[
     {
@@ -40,6 +42,12 @@ const getPlaceById=(req,res,next)=>{
     res.json({place:place});
 }
 const patchUpdatePlaceById=(req,res,next)=>{
+    const error=validationResult(req);
+    if (!error.isEmpty()){
+        console.log("place-controllers.js] error : ",error);
+        const err=new HttpError("Please add valid inputs.",422)
+        return next(err);
+    }
     console.log("Get place request from places.");
     const placeId=req.params.pid;
     const {title,description}= req.body;
@@ -82,21 +90,37 @@ const getPlacesByUserId= (req,res,next)=>{
     res.json({userPlace:userPlaces});
 }
 
-const postCreatePlace=(req,res,next)=>{
+const postCreatePlace=async(req,res,next)=>{
+    const error=validationResult(req);
+    if (!error.isEmpty()){
+        console.log("place-controllers.js] error : ",error);
+        const err=new HttpError("Please add valid inputs.",422)
+        return next(err);
+    }
     console.log("Post create place request from places.");
-    const {title,address,coordinates,description,creator}= req.body;
+    const {title,address,description,creator}= req.body;
+    let coordinates={};
+    let newPlace={};
+    findGeoCode(address).then(data=>{
+        console.log("[places-controllers.js] -> coordinate",data)
+        coordinates=data
+        newPlace={
+            id:uuid(),
+            title,
+            address,
+            location:{
+                lat:coordinates[0],
+                lng:coordinates[0]
+            },
+            description,
+            creator
+        };
+        DEMO_PLACES.push(newPlace)
+        res.status(201).json({place:newPlace});
+    });
+    // console.log("[places-controllers.js] -> coordinate",coordinates)
+    
 
-    const newPlace={
-        id:uuid(),
-        title,
-        address,
-        location:coordinates,
-        description,
-        creator
-    };
-
-    DEMO_PLACES.push(newPlace)
-    res.status(201).json({place:newPlace});
     
 }
 

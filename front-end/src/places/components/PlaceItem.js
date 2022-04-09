@@ -62,8 +62,8 @@ function PlaceItem(props) {
                 <p>Please confirm to delete this post!!</p>
         </Modal>
         
-      <li className='place-item'>
-          <Card>
+      <li >
+          <Card className='place-item'>
               <div className='place-item__image'>
                   <img src={props.image} alt={props.title}/>
               </div>
