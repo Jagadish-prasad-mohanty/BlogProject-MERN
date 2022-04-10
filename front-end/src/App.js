@@ -5,6 +5,7 @@ import {
   Redirect,
   Switch
 } from 'react-router-dom';
+import {useSelector} from 'react-redux';
 
 import Users from './user/pages/Users';
 import NewPlace from './places/pages/NewPlace';
@@ -15,6 +16,7 @@ import UpdatePlace from './places/pages/UpdatePlace';
 import Authnticate from './user/pages/Authnticate';
 
 const App = () => {
+  const userId=useSelector(state=>state.auth.currentUserId);
   return (
     <Router>
       <MainNavigation />
@@ -32,9 +34,9 @@ const App = () => {
           <Route path="/:userId/places">
             <UserPlaces/>
           </Route>
-          <Route path="/auth">
+          {!userId && <Route path="/auth">
             <Authnticate/>
-          </Route>
+          </Route>}
           <Redirect to="/" />
         </Switch>
       </main>

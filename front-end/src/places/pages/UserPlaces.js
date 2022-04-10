@@ -24,7 +24,7 @@ const DEMO_PLACES=[
             lat:19.8048196,
             lng:85.8157301
         },
-        creator:"u1",
+        creator:"u2",
     },
     
 ]

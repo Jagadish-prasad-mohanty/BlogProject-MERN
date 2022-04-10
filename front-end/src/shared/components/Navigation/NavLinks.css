@@ -14,14 +14,14 @@
   margin: 1rem;
 }
 
-.nav-links a {
+.nav-links a,button {
   border: 1px solid transparent;
   color: #292929;
   text-decoration: none;
   padding: 0.5rem;
 }
 
-.nav-links a:hover,
+.nav-links a:hover,button:hover,
 .nav-links a:active,
 .nav-links a.active {
   background: #f8df00;

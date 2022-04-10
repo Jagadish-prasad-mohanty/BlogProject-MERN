@@ -6,14 +6,15 @@ const formReducer=(state,action)=>{
       case "INPUT_CHANGE":
         let isFormValid=true;
         for(let input in state.inputs){
+          console.log("[form-hook -> input]",input);
           if (!state.inputs[input]) {
             continue;
           }
           if (input=== action.inputId){
-            console.log("[NewPlace.js] : input match",input,action.isValid);
+            console.log("[form-hook.js] : input match",input,action.isValid);
             isFormValid=isFormValid && action.isValid;
           }else{
-            console.log("[NewPlace.js] : input doesn't match",input,state);
+            console.log("[form-hook.js] : input doesn't match",input,state);
             isFormValid=isFormValid && state.inputs[input].isValid;
           }
         }
@@ -30,6 +31,7 @@ const formReducer=(state,action)=>{
         }
       case "INITIATE_FORM":
         return {
+          ...state,
           inputs:action.inputs,
           isFormValid:action.isFormValid
         }
@@ -42,7 +44,7 @@ const useFormHook=(inputState)=>{
     const [formState,dispatch]=useReducer(formReducer,inputState);
     console.log(formState);
     const inputHandler=useCallback((value,isValid,id)=>{
-        console.log("[UpdatePlace.js] : inputHandler called",value,isValid,id);
+        console.log("[form-hook.js] : inputHandler called",value,isValid,id);
         dispatch({type:"INPUT_CHANGE",value:value,isValid:isValid,inputId:id})
       },[])
       const onFormSubmitHandler = (e) => {
