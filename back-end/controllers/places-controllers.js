@@ -1,6 +1,8 @@
 const uuid=require('uuid/v4');
-const HttpError= require('../models/http-error');
 const {validationResult}=require('express-validator');
+
+const Place= require("../models/place");
+const HttpError= require('../models/http-error');
 const findGeoCode = require('../util/location');
 
 let DEMO_PLACES=[
@@ -99,23 +101,30 @@ const postCreatePlace=async(req,res,next)=>{
     }
     console.log("Post create place request from places.");
     const {title,address,description,creator}= req.body;
-    let coordinates={};
-    let newPlace={};
-    findGeoCode(address).then(data=>{
+    let coordinates;
+    let newPlace;
+    findGeoCode(address).then(async data=>{
         console.log("[places-controllers.js] -> coordinate",data)
         coordinates=data
-        newPlace={
-            id:uuid(),
+        
+         newPlace={
             title,
             address,
             location:{
                 lat:coordinates[0],
                 lng:coordinates[0]
             },
+            image:"https://lh5.googleusercontent.com/p/AF1QipMIQe3sxO0i4GxrzhEAtD6t9ihVTvoGeXJo2gCJ=w408-h272-k-no",
             description,
             creator
         };
-        DEMO_PLACES.push(newPlace)
+        const place=new Place(newPlace);
+        try{
+            await place.save();
+        }catch(err){
+            const error=new HttpError("Could not able to create place, Try again!!",404);
+            // next(error);
+        }
         res.status(201).json({place:newPlace});
     });
     // console.log("[places-controllers.js] -> coordinate",coordinates)

@@ -1,5 +1,6 @@
 const express=require('express');
 const bodyParser=require('body-parser');
+const mongoose= require('mongoose');
 
 const placesRouter=require('./routes/places-routes');
 const usersRouter=require('./routes/users-routes');
@@ -22,6 +23,12 @@ app.use((error,req,res,next)=>{
     }
     res.status(error.code || 500);
     res.json({message:error.message || "Some unknown Error occured"})
+});
+
+mongoose.connect("*****").then((response)=>{
+    console.log("Connected with database successfully");
+}).catch((error)=>{
+    console.log("Unable to connect with database.")
 });
 
 app.listen(5000);
