@@ -33,73 +33,99 @@ let DEMO_PLACES=[
     
 ]
 
-const getPlaceById=(req,res,next)=>{
+const getPlaceById=async (req,res,next)=>{
     console.log("Get place request from places.");
     const placeId=req.params.pid;
-    const place=DEMO_PLACES.find(place=>place.id===placeId);
+    let place;
+    try{
+        
+        place=await Place.findById(placeId);
+    }catch(err){
+        const error= new HttpError("Something went wrong, Unable to find the requested place",500)
+        return next(error);
+    }
     if(!place){
         const error= new HttpError("Could not find the place",404);
-        throw error;
+        return next(error);
     }
-    res.json({place:place});
+    res.json({place:place.toObject({getters:true})});
 }
-const patchUpdatePlaceById=(req,res,next)=>{
+const patchUpdatePlaceById=async (req,res,next)=>{
     const error=validationResult(req);
     if (!error.isEmpty()){
         console.log("place-controllers.js] error : ",error);
         const err=new HttpError("Please add valid inputs.",422)
         return next(err);
     }
-    console.log("Get place request from places.");
+    console.log("Patch place request from places.");
     const placeId=req.params.pid;
     const {title,description}= req.body;
-    const place=DEMO_PLACES.find(place=>place.id===placeId);
+    let place;
+    try{
+        place=await Place.findById(placeId);
+    }catch(err){
+        const error= new HttpError("Something went wrong, Unable to find the requested place.",500);
+        next(error);
+    }
     if(!place){
         const error= new HttpError("Could not find the place",404);
-        throw error;
+        return next(error);
     }
-    const updatedPlace={...place};
+    
     if (title)
-        updatedPlace.title=title;
+        place.title=title;
     if (description)
-        updatedPlace.description=description;
+        place.description=description;
     
-
-    const index=DEMO_PLACES.findIndex((place)=>place.id==placeId)
-    console.log(index,updatedPlace);
-    if (index!==-1)
-    DEMO_PLACES[index]=updatedPlace
-    console.log(DEMO_PLACES);
-    res.status(200).json({place:updatedPlace});
+    try{
+       await place.save()
+    }catch(err){
+        const error= new HttpError("Something went wrong, Unable to save record.")
+        return next(error);
+    }
+    res.status(200).json({place:place.toObject({getters:true})});
 }
-const patchDeletePlaceById=(req,res,next)=>{
-    console.log("Get place request from places.");
+const patchDeletePlaceById=async (req,res,next)=>{
+    console.log("Delete place request from places.");
     const placeId=req.params.pid;
-    
-    DEMO_PLACES=DEMO_PLACES.filter((place)=>place.id!==placeId);
-    console.log(DEMO_PLACES);
+    let place;
+
+    try{
+        place= await Place.deleteOne({_id:placeId});
+    }catch(err){
+        const error= new HttpError("Something went wrong, Unable to delete record.");
+        return next(error)
+    }
     res.status(200).json({message:"Deletion Done"});
 }
 
-const getPlacesByUserId= (req,res,next)=>{
+const getPlacesByUserId= async (req,res,next)=>{
     console.log("Get user places request from places.");
     const userId=req.params.uid;
-    const userPlaces=DEMO_PLACES.filter(place=>place.creator===userId);
+    let userPlaces;
+    try{
+
+        userPlaces=await Place.find({creator:userId}).exec();
+    }catch(err){
+        const error= new HttpError("Something went Wrong, couldn't find user");
+        return next(error)
+    }
     if(userPlaces.length===0){
         const error=new HttpError("Could not find the place posted by the user",404);
         return next(error);
     }
-    res.json({userPlace:userPlaces});
+    res.json({userPlace:userPlaces.map(place=>place.toObject({getters:true}))});
 }
 
 const postCreatePlace=async(req,res,next)=>{
+
+    console.log("Post create place request from places.");
     const error=validationResult(req);
     if (!error.isEmpty()){
         console.log("place-controllers.js] error : ",error);
         const err=new HttpError("Please add valid inputs.",422)
         return next(err);
     }
-    console.log("Post create place request from places.");
     const {title,address,description,creator}= req.body;
     let coordinates;
     let newPlace;
@@ -125,7 +151,7 @@ const postCreatePlace=async(req,res,next)=>{
             const error=new HttpError("Could not able to create place, Try again!!",404);
             // next(error);
         }
-        res.status(201).json({place:newPlace});
+        res.status(201).json({place:place});
     });
     // console.log("[places-controllers.js] -> coordinate",coordinates)
     

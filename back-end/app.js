@@ -25,7 +25,7 @@ app.use((error,req,res,next)=>{
     res.json({message:error.message || "Some unknown Error occured"})
 });
 
-mongoose.connect("*****").then((response)=>{
+mongoose.connect("mongodb+srv://Jagadish123:Mohantym90%40@cluster0.ywlsa.mongodb.net/places?retryWrites=true&w=majority").then((response)=>{
     console.log("Connected with database successfully");
 }).catch((error)=>{
     console.log("Unable to connect with database.")
