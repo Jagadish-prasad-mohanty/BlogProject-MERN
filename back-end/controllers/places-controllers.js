@@ -1,7 +1,10 @@
 const uuid=require('uuid/v4');
 const {validationResult}=require('express-validator');
+const mongoose = require('mongoose');
+
 
 const Place= require("../models/place");
+const User= require("../models/user");
 const HttpError= require('../models/http-error');
 const findGeoCode = require('../util/location');
 
@@ -91,10 +94,39 @@ const patchDeletePlaceById=async (req,res,next)=>{
     let place;
 
     try{
-        place= await Place.deleteOne({_id:placeId});
+        place= await Place.findById(placeId);
     }catch(err){
-        const error= new HttpError("Something went wrong, Unable to delete record.");
+        const error= new HttpError("Something went wrong, Unable to delete the place1.");
         return next(error)
+    }
+    if (!place){
+        const error= new HttpError("Something went wrong, Unable to find the place.");
+        return next(error);
+    }
+    console.log("place : ",place);
+    let user;
+    try{
+        user= await User.findById(place.creator);
+    }catch(err){
+        const error= new HttpError("Something went wrong, Unable to delete the place2.");
+        return next(error)
+    }
+    if (!user){
+       
+            const error= new HttpError("Something went wrong, Unable to find the creator.");
+            return next(error) 
+    }
+    try{
+        const sess=await mongoose.startSession();
+        sess.startTransaction();
+        await Place.deleteOne(place);
+        user.places.remove(place);
+        await user.save();
+        await sess.commitTransaction();
+    }catch(err){
+        console.log(err);
+        const error= new HttpError("Something went wrong, Unable to delete place3.");
+        return next(error);
     }
     res.status(200).json({message:"Deletion Done"});
 }
@@ -127,6 +159,19 @@ const postCreatePlace=async(req,res,next)=>{
         return next(err);
     }
     const {title,address,description,creator}= req.body;
+    let user;
+    try{
+        user=await User.findOne({"_id":creator});
+    }catch(err){
+        const error= new HttpError("Something went wrong, Unable to create place",500);
+        return next(error);
+    }
+    if (!user){
+        // console.log(err);
+        const error= new HttpError("Something went wrong, Unable to find the User.",404);
+        return next(error);
+    }
+    console.log(user);
     let coordinates;
     let newPlace;
     findGeoCode(address).then(async data=>{
@@ -146,10 +191,16 @@ const postCreatePlace=async(req,res,next)=>{
         };
         const place=new Place(newPlace);
         try{
-            await place.save();
+            const sess=await mongoose.startSession();
+            sess.startTransaction();
+            await place.save({session:sess})
+            user.places.push(place);
+            await user.save({session:sess});
+            await sess.commitTransaction()
         }catch(err){
+            console.log(err)
             const error=new HttpError("Could not able to create place, Try again!!",404);
-            // next(error);
+            return next(error);
         }
         res.status(201).json({place:place});
     });
