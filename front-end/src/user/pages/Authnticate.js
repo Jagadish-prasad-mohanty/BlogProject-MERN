@@ -50,8 +50,33 @@ function Authnticate() {
             return !prevState;
         });
       }
-      const formSubmitHandler =(e)=>{
+      const formSubmitHandler =async (e)=>{
         e.preventDefault();
+        if (isSignIn){
+          
+        }else{
+          console.log("isSignIn",isSignIn)
+          try{
+
+            const response= await fetch("http://localhost:5000/api/users/signup",
+            {
+              method:"POST",
+              headers:{
+                "Content-Type":"application/json"
+              },
+              body:JSON.stringify({
+                name:formState.inputs.name.value,
+                email:formState.inputs.email.value,
+                password:formState.inputs.email.value
+              })
+            }
+            );
+            const data=await response.json();
+            console.log("response data",data);
+          }catch(err){
+            console.log(err);
+          }
+        }
         if(isSignIn){
           const currentUser= users.find(user=>user.email===formState.inputs.email.value);
           if (!currentUser){
