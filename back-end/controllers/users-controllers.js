@@ -62,7 +62,7 @@ const postSignUpUser= async (req,res,next)=>{
         return res.status(200).json({user:user.toObject({getters:true})});
     
     }else{
-
+        console.log("User already exist.")
         const err= new HttpError("User already exist, please login instead.",422);
         next(err);
     }
