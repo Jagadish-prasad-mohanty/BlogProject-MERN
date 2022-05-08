@@ -11,15 +11,17 @@ import "./Authenticate.css";
 import { logInHandler, signUpHandler } from '../../shared/store/actions/auth-action';
 import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
 import ErrorModal from '../../shared/components/UIElements/ErrorModal';
+import useHttpClient from '../../shared/hook/http-hook';
 
 function Authnticate() {
     const [isSignIn,setIsSignIn]=useState(false);
-    const [isLoading,setIsLoading]=useState(false);
-    const [error,setError]=useState(null);
+    // const [isLoading,setIsLoading]=useState(false);
+    // const [error,setError]=useState(null);
+    const {isLoading,error,sendRequest,clearError}= useHttpClient();
    const dispatch= useDispatch();
    const users=useSelector(state=>state.auth.users);
     
-    const [formState, inputHandler,onFormSubmitHandler,initiateForm] =useFormHook({
+    const {formState, inputHandler,initiateForm} =useFormHook({
         inputs: {
          name :{
            value:"",
@@ -63,75 +65,56 @@ function Authnticate() {
       const authSubmitHandler =async (e)=>{
         e.preventDefault();
         if (isSignIn){
+          console.log("isSignIn",isSignIn)
           try{
-          setIsLoading(true);
-            const response= await fetch("http://localhost:5000/api/users/signin",
-            {
-              method:"POST",
-              headers:{
-                "Content-Type":"application/json"
-              },
-              body:JSON.stringify({
+
+            const responseData=await sendRequest("http://localhost:5000/api/users/signin",
+            
+              "POST",
+              JSON.stringify({
                 email:formState.inputs.email.value,
                 password:formState.inputs.password.value
-              })
-            }
+              }),
+              {
+                "Content-Type":"application/json"
+              },
+              
             );
-            if (!response.ok){
-              console.log("Error -> 81",response)
-              throw new Error("Unable to signin, Invalid credentials.")
-            }
-            const data=await response.json();
-            console.log("response data",data);
-            setIsLoading(false);
-            dispatch(logInHandler({id:formState.inputs.email.value}))
+            console.log("response data",responseData);
+            
+            dispatch(logInHandler({id:responseData.userId}))
           }catch(err){
-            setIsLoading(false);
-            setError(err.message || "Unable to signin.")
-            console.log("Authenticate.js Error -> 81 : ",err);
-            return;
+            throw new Error(err.message);
           }
+          
 
           
         }else{
           console.log("isSignIn",isSignIn)
-          try{
-            setIsLoading(true);
-            const response= await fetch("http://localhost:5000/api/users/signup",
-            {
-              method:"POST",
-              headers:{
-                "Content-Type":"application/json"
-              },
-              body:JSON.stringify({
+            const responseData=await sendRequest("http://localhost:5000/api/users/signup",
+            
+              "POST",
+              JSON.stringify({
                 name:formState.inputs.name.value,
                 email:formState.inputs.email.value,
                 password:formState.inputs.password.value
-              })
-            }
+              }),
+              {
+                "Content-Type":"application/json"
+              },
+            
             );
-            if (!response.ok){
-              console.log("Error -> 87",response)
-              throw new Error("Unable to signup, Please check inputs.")
-            }
-            const data=await response.json();
-            console.log("response data",data);
-            setIsLoading(false);
+            
+            
+            console.log("response data",responseData);
             switchModeHandler();
-          }catch(err){
-            setIsLoading(false);
-            setError(err.message || "Unable to signup.")
-            console.log("Authenticate.js Error -> 81 : ",err);
-            return;
-          }
+         
           
         }
       
         console.log("[Authenticate.js -> formState]",formState);
       }
-      const closeErrorModal= ()=>{
-        setError(null);
-      }
+      
       if (isLoading){
         return <div className='center'>
 
@@ -142,7 +125,7 @@ function Authnticate() {
   return (
     <>
       <ErrorModal error={error}
-        onClear={closeErrorModal}
+        onClear={clearError}
       />
       <Card className="auth">
 

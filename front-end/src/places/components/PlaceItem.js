@@ -1,18 +1,22 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import Card from '../../shared/components/UIElements/Card';
 import Button from '../../shared/components/FormElements/Button';
 import Modal from '../../shared/components/UIElements/Modal';
 import './PlaceItem.css';
 import Map from '../../shared/components/UIElements/Map';
+import { useParams } from 'react-router-dom';
+
 
 
 function PlaceItem(props) {
     const [showMap,setShowMap]=useState(false);
     const [showDeleteModal,setShowDeleteModal]=useState(false);
     // const [deleteConfirmation,setDeleteConfirmation]=useState(false);
+    const currentUserId=useSelector(state=>state.auth.currentUserId);
+    const userId=useParams().userId;
 
-   
 
     const openMap=()=>{
         console.log("openMap called");
@@ -28,9 +32,11 @@ function PlaceItem(props) {
         
     }
     const onCancelDeletePlaceHandler=()=>{
+        console.log("[PlaceItem.js] onCancelDeletePlaceHandler");
         setShowDeleteModal(false);
     }
     const onConfirmDeletePlaceHandler= ()=>{
+        console.log("[PlaceItem.js] onConfirmDeletePlaceHandler");
         setShowDeleteModal(false);
         props.deletePlace(props.id);
     }
@@ -52,8 +58,8 @@ function PlaceItem(props) {
         header="Are you sure?"
             show={showDeleteModal}
             footer={<React.Fragment>
-                <Button inverse onClick={onCancelDeletePlaceHandler}>CANCEL</Button>
-                <Button onClick={onConfirmDeletePlaceHandler}>DELETE</Button>
+                <Button inverse type="submit" onClick={onCancelDeletePlaceHandler}>CANCEL</Button>
+                <Button type="button" onClick={onConfirmDeletePlaceHandler}>DELETE</Button>
             </React.Fragment>}
             footerClass='place-item__modal-actions'
             contentClass='place-item__modal-content'
@@ -74,8 +80,8 @@ function PlaceItem(props) {
               </div>
                 <div className='place-item__actions'>
                     <Button inverse onClick={openMap}>VIEW ON MAP</Button>
-                    <Button to={`/places/${props.id}`}>EDIT</Button>
-                    <Button danger onClick={onDeletePlaceHandler}>DELETE</Button>
+                    {userId===currentUserId && <Button to={`/places/${props.id}`}>EDIT</Button>}
+                    {userId===currentUserId && <Button danger onClick={onDeletePlaceHandler}>DELETE</Button>}
                 </div>
           </Card>
       </li>

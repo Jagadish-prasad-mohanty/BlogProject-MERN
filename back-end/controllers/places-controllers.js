@@ -108,17 +108,17 @@ const patchDeletePlaceById=async (req,res,next)=>{
 const getPlacesByUserId= async (req,res,next)=>{
     console.log("Get user places request from places.");
     const userId=req.params.uid;
-    let userPlaces;
+    let userWithPlaces;
     try{
         userWithPlaces=await User.findById(userId).populate("places");
     }catch(err){
         const error= new HttpError("Something went Wrong, couldn't find user");
         return next(error)
     }
-    if(!userWithPlaces && userWithPlaces.places.length===0){
-        const error=new HttpError("Could not find the place posted by the user",404);
-        return next(error);
-    }
+    // if(!userWithPlaces || userWithPlaces.places.length===0){
+    //     const error=new HttpError("Could not find the place posted by the user",404);
+    //     return next(error);
+    // }
     res.json({userPlace:userWithPlaces.places.map(place=>place.toObject({getters:true}))});
 }
 

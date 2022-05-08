@@ -25,12 +25,12 @@ const App = () => {
           <Route path="/" exact>
             <Users />
           </Route>
-          <Route path="/places/new" >
+          {userId &&<Route path="/places/new" >
             <NewPlace />
-          </Route>
-          <Route path="/places/:placeId" >
+          </Route>}
+          {userId &&<Route path="/places/:placeId" >
             <UpdatePlace/>
-          </Route>
+          </Route>}
           <Route path="/:userId/places">
             <UserPlaces/>
           </Route>

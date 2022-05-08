@@ -77,10 +77,9 @@ const postLogInUser= async (req,res,next)=>{
         const error= new HttpError("Something went wrong!!",500);
         return next(error);
     }
-    console.log(checkUser)
+    console.log(checkUser);
     if (checkUser && checkUser.password===password){
-        return res.status(200).json({message:"User logged in successfully"});
-        
+        return res.status(200).json({userId:checkUser.id});
     }
     const err= new HttpError("Wrong emailid or password, Could not log you in.",401);
     next(err);

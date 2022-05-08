@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect, useReducer, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 
 import Button from "../../shared/components/FormElements/Button";
 import Input from "../../shared/components/FormElements/Input";
 import Card from "../../shared/components/UIElements/Card";
+import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
 import useFormHook from "../../shared/hook/form-hook";
 import {
   VALIDATOR_MINLENGTH,
@@ -43,9 +44,10 @@ const DEMO_PLACES = [
 ];
 const UpdatePlace = () => {
   const [isLoading,setIsLoading]=useState(true);
+  const [place,setPlace]=useState();
   const {placeId }= useParams();
-  console.log(placeId)
-  
+  // console.log(placeId,place)
+  const history= useHistory();
   const [formState, inputHandler,onFormSubmitHandler,initiateForm] =useFormHook({
     inputs: {
       title: {
@@ -60,37 +62,70 @@ const UpdatePlace = () => {
     isFormValid: false,
   });
 
-  const identifiedPlace = DEMO_PLACES.find((place) => place.id === placeId);
   useEffect(()=>{
-    if (identifiedPlace){
+    fetch(`http://localhost:5000/api/places/${placeId}`).then(response=>{
+      return response.json();
+    }).then(data=>{
+      setPlace(data.place);
+    }).catch(err=>{
+      console.log("error -> 73",err)
+    })
+  },[placeId])
+  useEffect(()=>{
+    
+    if (place){
     initiateForm({
       title: {
-        value: identifiedPlace.title,
+        value: place.title,
         isValid: true,
       },
       description: {
-        value: identifiedPlace.description,
+        value: place.description,
         isValid: true,
       }
     },true)
     setIsLoading(false);
   }
-  },[identifiedPlace,initiateForm]);
-  // console.log(identifiedPlace)
-  if (!identifiedPlace) {
+  },[place,initiateForm]);
+  if (!place) {
+    console.log("place",place)
     return <div className="center">
     <Card>
-Place not Found!
+      Place not Found!
     </Card>
     </div>;
   }
+  const updatePlaceHandler=(e)=>{
+    e.preventDefault();
+    setIsLoading(true);
+    fetch(`http://localhost:5000/api/places/${placeId}`,{
+      method:"PATCH",
+      headers:{
+        "Content-Type":"application/json",
+      },
+      body:JSON.stringify({
+        title:formState.inputs.title.value,
+        description:formState.inputs.description.value
+      })
+    }).then(res=>res.json()).then(data=>{
+      console.log(data);
+      setIsLoading(false)
+    }).catch(err=>{
+      console.log(err);
+      setIsLoading(false);
+    })
+    
+    history.push('/');
+  }
 
   if (isLoading){
-    return <div style={{ textAlign: "center",color:"white" }}>Loading...</div>;
+    return <div className="center">
+      <LoadingSpinner/>
+    </div>;
   }
   return (
 
-    <form className="form" onSubmit={onFormSubmitHandler}>
+    <form className="form" onSubmit={updatePlaceHandler}>
       <Input
         type="text"
         errorMsg="Please enter a valid Place Name"

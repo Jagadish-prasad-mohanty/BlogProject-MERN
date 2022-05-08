@@ -9,6 +9,8 @@ const Users = () => {
   const [isLoading,setIsLoading]=useState(false);
     const [error,setError]=useState(null);
     const [users,setUsers]=useState([]);
+
+  
   useEffect(()=>{
     
       setIsLoading(true);
@@ -45,6 +47,7 @@ const Users = () => {
     onClear={closeErrorModal}
   />
   <UsersList items={users} />;
+  
   </>
 };
 

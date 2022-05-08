@@ -59,7 +59,7 @@ const useFormHook=(inputState)=>{
         console.log("[form-hook.js] initiateForm.");
         dispatch({type:"INITIATE_FORM",inputs:inputData,isFormValid:formValidity})
       },[]);
-    return [formState,inputHandler,onFormSubmitHandler,initiateForm];
+    return {formState,inputHandler,onFormSubmitHandler,initiateForm};
 }
 
 export default useFormHook;
