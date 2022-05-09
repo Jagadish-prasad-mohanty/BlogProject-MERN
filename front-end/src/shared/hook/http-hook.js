@@ -1,4 +1,4 @@
-import React, { useRef, useState,useEffect } from "react";
+import React, { useRef, useState,useEffect,useCallback } from "react";
 
 const useHttpClient= ()=>{
     const [isLoading,setIsLoading]=useState(false);
@@ -9,7 +9,7 @@ const useHttpClient= ()=>{
             activeHttpRequest.current.forEach(abortCtrl=>abortCtrl.abort());
         }
     },[])
-    const sendRequest= async (url,method= "GET",body=null,headers={})=>{
+    const sendRequest=useCallback( async (url,method= "GET",body=null,headers={})=>{
         setIsLoading(true);
         const abortCtrl= new AbortController();
         activeHttpRequest.current.push(abortCtrl);
@@ -21,20 +21,21 @@ const useHttpClient= ()=>{
                 signal:abortCtrl.signal
             });
             console.log(response);
-            if (!response.ok){
-                throw new Error(response.message || "Something went wrong.");
-            }
+            activeHttpRequest.current= activeHttpRequest.current.filter(abtCtrl=> abtCtrl!==abortCtrl);
             const data= await response.json();
+            if (!response.ok){
+                throw new Error(data.message || "Something went wrong.");
+            }
             setIsLoading(false);
-            console.log("data",data)
+            console.log("data",data);
             return data;
         }catch(err){
             setError(err.message);
             setIsLoading(false);
-            return {}
+            throw err;
         }
 
-    }
+    },[])
     const clearError= ()=>{
         setError(null);
     }

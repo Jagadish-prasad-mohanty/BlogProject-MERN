@@ -4,38 +4,22 @@ import ErrorModal from '../../shared/components/UIElements/ErrorModal';
 import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
 
 import UsersList from '../components/UsersList';
+import useHttpClient from '../../shared/hook/http-hook';
 
 const Users = () => {
-  const [isLoading,setIsLoading]=useState(false);
-    const [error,setError]=useState(null);
     const [users,setUsers]=useState([]);
-
+  const {isLoading,error,sendRequest,clearError} =useHttpClient();
   
   useEffect(()=>{
     
-      setIsLoading(true);
-      fetch("http://localhost:5000/api/users").then(response=>{
+     
+      sendRequest("http://localhost:5000/api/users").then((responseData)=>{
 
-        if (!response.ok){
-          console.log("Error -> 87",response)
-          throw new Error("Unable to load users.")
-        }
-        return response.json()
-      }).then( data=>{
-
-        console.log("response data",data);
-        setUsers(data.users);
-        setIsLoading(false);
-      }).catch(err=>{
-      setIsLoading(false);
-      setError(err.message || "Unable to load users.")
-      console.log("Authenticate.js Error -> 81 : ",err);
-      return;
-    })
-  },[])
-  const closeErrorModal= ()=>{
-    setError(null);
-  }
+        console.log("response data",responseData);
+        setUsers(responseData.users);
+      }).catch(err=>{})
+  },[sendRequest])
+  
   if (isLoading){
     return <div className="center">
       <LoadingSpinner/>
@@ -44,7 +28,7 @@ const Users = () => {
   return <>
   <ErrorModal 
     error={error}
-    onClear={closeErrorModal}
+    onClear={clearError}
   />
   <UsersList items={users} />;
   

@@ -80,18 +80,19 @@ function Authnticate() {
               },
               
             );
-            console.log("response data",responseData);
+           
             
             dispatch(logInHandler({id:responseData.userId}))
           }catch(err){
-            throw new Error(err.message);
           }
           
 
           
         }else{
           console.log("isSignIn",isSignIn)
-            const responseData=await sendRequest("http://localhost:5000/api/users/signup",
+          try{
+
+            const responseData= await sendRequest("http://localhost:5000/api/users/signup",
             
               "POST",
               JSON.stringify({
@@ -102,12 +103,13 @@ function Authnticate() {
               {
                 "Content-Type":"application/json"
               },
+              
+              );
+              console.log("response data",responseData);
+              switchModeHandler();   
+            }catch(err){}
             
-            );
             
-            
-            console.log("response data",responseData);
-            switchModeHandler();
          
           
         }

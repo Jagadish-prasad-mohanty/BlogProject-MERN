@@ -7,12 +7,20 @@ import {
   VALIDATOR_MINLENGTH,
   VALIDATOR_REQUIRE,
 } from "../../shared/util/validators";
+import useHttpClient from "../../shared/hook/http-hook";
+import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
+import ErrorModal from "../../shared/components/UIElements/ErrorModal";
 
 import "./NewPlace.css";
+import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 
 
 const NewPlace = () => {
-  const [formState, inputHandler,onFormSubmitHandler] =useFormHook({
+  const {isLoading,error,sendRequest,clearError}= useHttpClient();
+  const userId=useSelector(state=>state.auth.currentUserId);
+  const history = useHistory();
+  const {formState, inputHandler} =useFormHook({
     inputs: {
       title: {
         value: "",
@@ -30,10 +38,38 @@ const NewPlace = () => {
     isFormValid: false,
   });
 
+  const onCreatePlace= async (e)=>{
+    e.preventDefault();
+    try{
+      await sendRequest("http://localhost:5000/api/places",
+      "POST",
+      JSON.stringify({
+        title:formState.inputs.title.value,
+        description:formState.inputs.description.value,
+        address:formState.inputs.address.value,
+        creator:userId
+      }),
+      {
+        "Content-type":"application/json"
+      }
+      )
+      history.push(`/${userId}/places`);
+    }catch(err){}
+
+  }
+  if (isLoading){
+    return <div className="center">
+      <LoadingSpinner/>
+    </div>
+  }
   
   
   return (
-    <form className="form" onSubmit={onFormSubmitHandler}>
+    <>
+    <ErrorModal error={error}
+      onClear={clearError}
+    />
+    <form className="form" onSubmit={onCreatePlace}>
       <Input
         type="text"
         errorMsg="Please enter a valid Place Name"
@@ -70,6 +106,7 @@ const NewPlace = () => {
         Add Place
       </Button>
     </form>
+    </>
   );
 };
 
