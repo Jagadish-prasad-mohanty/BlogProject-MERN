@@ -1,56 +1,43 @@
 import React, { useState,useEffect} from 'react'
 import { useHistory, useParams } from 'react-router-dom';
+
 import ErrorModal from '../../shared/components/UIElements/ErrorModal';
 import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
 import PlaceList from '../components/PlaceList';
+import useHttpClient from '../../shared/hook/http-hook';
 
 function UserPlaces() {
     const userId=useParams().userId;
     const [userPlaces,setUserPlaces]=useState([]);
-    const [error,setError]=useState(null);
-    const [isLoading,setIsLoading]=useState();
     const history= useHistory();
+    const {isLoading,error,sendRequest,clearError}= useHttpClient();
+
     useEffect(()=>{
-           const fetchUserPlaces= async ()=>{
-               try{
-                setIsLoading(true);
-                   const response=await fetch(`http://localhost:5000/api/places/user/${userId}`);
-                   const data= await response.json();
-                   if (!response.ok){
-                       throw new Error(data.message);
-                   }
-                   console.log(data)
-                   setUserPlaces(data.userPlace);
-                   setIsLoading(false);
-               }catch(err){
-                    setIsLoading(false);
-                   setError(err.message || "Unable to find requested user.");
-               }
-           } 
-           fetchUserPlaces();
+               
+        sendRequest(`http://localhost:5000/api/places/user/${userId}`).then(responseData=>{
+
+            console.log(responseData);
+            setUserPlaces(responseData.userPlace);
+        });
+                   
+             
+           
     },[userId]);
     const deletePlaceHandler =(placeId)=>{
         console.log(placeId)
-        setIsLoading(true)
-        fetch(`http://localhost:5000/api/places/${placeId}`,{
-            method:"DELETE",
-            headers:{
+        
+        sendRequest(`http://localhost:5000/api/places/${placeId}`,
+            "DELETE",
+            null,
+            {
                 "Content-Type":"application/json"
             }
-        }).then(response=>response.json()).then(data=>{
-            console.log(data);
-            setIsLoading(false);
+        ).then(responseData=>{
+            console.log(responseData);
             history.push("/");
-        }).catch(err=>{
-             setIsLoading(false);
-            setError(err.message || "Unable to find requested user.");
-        
-        });
+        })
     }
-    const closeErrorModal= ()=>{
-        setError(null);
-        history.push("/")
-      }
+  
       if (isLoading){
           return <div className='center'>
               <LoadingSpinner/>
@@ -60,7 +47,7 @@ function UserPlaces() {
       <>
     <ErrorModal
     error={error}
-        onClear={closeErrorModal}
+        onClear={clearError}
     />
     <PlaceList items={userPlaces} deletePlace={deletePlaceHandler}/>
       </>

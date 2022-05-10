@@ -10,8 +10,10 @@ import {
   VALIDATOR_MINLENGTH,
   VALIDATOR_REQUIRE,
 } from "../../shared/util/validators";
+import useHttpClient from "../../shared/hook/http-hook";
 
 import "./NewPlace.css";
+import ErrorModal from "../../shared/components/UIElements/ErrorModal";
 
 const DEMO_PLACES = [
   {
@@ -43,12 +45,14 @@ const DEMO_PLACES = [
   },
 ];
 const UpdatePlace = () => {
-  const [isLoading,setIsLoading]=useState(true);
   const [place,setPlace]=useState();
   const {placeId }= useParams();
   // console.log(placeId,place)
+  const [loading,setLoading]= useState(true);
   const history= useHistory();
-  const [formState, inputHandler,onFormSubmitHandler,initiateForm] =useFormHook({
+  const {isLoading,error,sendRequest,clearError} = useHttpClient();
+
+  const {formState, inputHandler,initiateForm} =useFormHook({
     inputs: {
       title: {
         value: "",
@@ -63,12 +67,8 @@ const UpdatePlace = () => {
   });
 
   useEffect(()=>{
-    fetch(`http://localhost:5000/api/places/${placeId}`).then(response=>{
-      return response.json();
-    }).then(data=>{
-      setPlace(data.place);
-    }).catch(err=>{
-      console.log("error -> 73",err)
+    sendRequest(`http://localhost:5000/api/places/${placeId}`).then(responseData=>{
+      setPlace(responseData.place);
     })
   },[placeId])
   useEffect(()=>{
@@ -84,7 +84,7 @@ const UpdatePlace = () => {
         isValid: true,
       }
     },true)
-    setIsLoading(false);
+    setLoading(false);
   }
   },[place,initiateForm]);
   if (!place) {
@@ -97,34 +97,32 @@ const UpdatePlace = () => {
   }
   const updatePlaceHandler=(e)=>{
     e.preventDefault();
-    setIsLoading(true);
-    fetch(`http://localhost:5000/api/places/${placeId}`,{
-      method:"PATCH",
-      headers:{
-        "Content-Type":"application/json",
-      },
-      body:JSON.stringify({
+    sendRequest(`http://localhost:5000/api/places/${placeId}`,
+      "PATCH",
+      JSON.stringify({
         title:formState.inputs.title.value,
         description:formState.inputs.description.value
-      })
-    }).then(res=>res.json()).then(data=>{
-      console.log(data);
-      setIsLoading(false)
-    }).catch(err=>{
-      console.log(err);
-      setIsLoading(false);
+      }),
+      {
+        "Content-Type":"application/json",
+      }
+    ).then(responseData=>{
+      history.push('/');
+      console.log(responseData);
     })
     
-    history.push('/');
   }
 
-  if (isLoading){
+  if (loading || isLoading){
     return <div className="center">
       <LoadingSpinner/>
     </div>;
   }
   return (
-
+    <>
+    <ErrorModal error={error}
+      onClear={clearError}
+    />
     <form className="form" onSubmit={updatePlaceHandler}>
       <Input
         type="text"
@@ -156,6 +154,8 @@ const UpdatePlace = () => {
         Add Place
       </Button>
     </form>
+    </>
+
   );
 };
 
