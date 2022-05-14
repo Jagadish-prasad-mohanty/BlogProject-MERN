@@ -6,12 +6,13 @@ import {VALIDATOR_MINLENGTH ,VALIDATOR_EMAIL, VALIDATOR_REQUIRE} from '../../sha
 import Card from '../../shared/components/UIElements/Card';
 import useFormHook from '../../shared/hook/form-hook';
 import {useDispatch,useSelector} from 'react-redux';
-
-import "./Authenticate.css";
 import { logInHandler, signUpHandler } from '../../shared/store/actions/auth-action';
 import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
 import ErrorModal from '../../shared/components/UIElements/ErrorModal';
 import useHttpClient from '../../shared/hook/http-hook';
+import ImageUploader from '../../shared/components/UIElements/ImageUploader';
+
+import "./Authenticate.css";
 
 function Authnticate() {
     const [isSignIn,setIsSignIn]=useState(false);
@@ -144,6 +145,7 @@ function Authnticate() {
             errorMsg="Please add a valid Name"
         >Name </Input>
         }
+        <ImageUploader/>
         <Input
             type="text"
             id="email"

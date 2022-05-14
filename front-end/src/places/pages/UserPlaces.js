@@ -34,7 +34,8 @@ function UserPlaces() {
             }
         ).then(responseData=>{
             console.log(responseData);
-            history.push("/");
+            // history.push("/");
+            setUserPlaces(prevState=>prevState.filter(place=>place.id!==placeId));
         })
     }
   
