@@ -20,7 +20,6 @@ function Authnticate() {
     // const [error,setError]=useState(null);
     const {isLoading,error,sendRequest,clearError}= useHttpClient();
    const dispatch= useDispatch();
-   const users=useSelector(state=>state.auth.users);
     
     const {formState, inputHandler,initiateForm} =useFormHook({
         inputs: {
@@ -28,6 +27,10 @@ function Authnticate() {
            value:"",
            isValid:false
          },
+          profileImage:{
+            value:null,
+            isValid:false
+          },
           email: {
             value: "",
             isValid: false,
@@ -45,8 +48,9 @@ function Authnticate() {
           console.log("Initiate signin");
           initiateForm({
             ...formState.inputs,
-            name:undefined
-          },formState.inputs.email.isValid && formState.inputs.email.isValid) 
+            name:undefined,
+            profileImage:undefined
+          },formState.inputs.email.isValid && formState.inputs.password.isValid) 
         }
         else{
           console.log("Initiate signup");
@@ -56,6 +60,10 @@ function Authnticate() {
             name:{
               value: "",
               isValid: false,
+            },
+            profileImage:{
+              value:null,
+              isValid:false
             }
           },false) 
         }
@@ -65,6 +73,7 @@ function Authnticate() {
       }
       const authSubmitHandler =async (e)=>{
         e.preventDefault();
+        console.log(formState.inputs);
         if (isSignIn){
           console.log("isSignIn",isSignIn)
           try{
@@ -145,7 +154,8 @@ function Authnticate() {
             errorMsg="Please add a valid Name"
         >Name </Input>
         }
-        <ImageUploader/>
+        {!isSignIn &&
+         <ImageUploader id="profileImage" onInput={inputHandler} errorMsg="Please add a valid Image"/>}
         <Input
             type="text"
             id="email"

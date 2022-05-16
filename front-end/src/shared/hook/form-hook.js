@@ -13,13 +13,15 @@ const formReducer=(state,action)=>{
           if (input=== action.inputId){
             console.log("[form-hook.js] : input match",input,action.isValid,action.inputId);
             isFormValid=isFormValid && action.isValid;
+            break;
           }else{
             console.log("[form-hook.js] : input doesn't match",input,action.inputId,action.isValid,state);
             isFormValid=isFormValid && state.inputs[input].isValid;
           }
         }
         let inputState=undefined;
-        if (state.inputs[action.inputId]){
+        if (state.inputs[action.inputId]!==undefined){
+          console.log(action.inputId,action.value,state.inputs[action.inputId])
           inputState={
             value:action.value,
             isValid:action.isValid
