@@ -71,7 +71,7 @@ function PlaceItem(props) {
       <li >
           <Card className='place-item'>
               <div className='place-item__image'>
-                  <img src={props.image} alt={props.title}/>
+                  <img src={`http://localhost:5000/${props.image}`} alt={props.title}/>
               </div>
               <div className='place-item__info'>
                   <h2>{props.title}</h2>

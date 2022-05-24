@@ -14,6 +14,7 @@ import ErrorModal from "../../shared/components/UIElements/ErrorModal";
 import "./NewPlace.css";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
+import ImageUploader from "../../shared/components/UIElements/ImageUploader";
 
 
 const NewPlace = () => {
@@ -25,6 +26,10 @@ const NewPlace = () => {
       title: {
         value: "",
         isValid: false,
+      },
+      placeImage:{
+        value:"",
+        isValid:true
       },
       description: {
         value: "",
@@ -40,18 +45,16 @@ const NewPlace = () => {
 
   const onCreatePlace= async (e)=>{
     e.preventDefault();
+    const formData=new FormData();
+    formData.append("title",formState.inputs.title.value);
+    formData.append("placeImage",formState.inputs.placeImage.value);
+    formData.append("description",formState.inputs.description.value);
+    formData.append("address",formState.inputs.address.value);
+    formData.append("creator",userId);
     try{
       await sendRequest("http://localhost:5000/api/places",
       "POST",
-      JSON.stringify({
-        title:formState.inputs.title.value,
-        description:formState.inputs.description.value,
-        address:formState.inputs.address.value,
-        creator:userId
-      }),
-      {
-        "Content-type":"application/json"
-      }
+      formData
       )
       history.push(`/${userId}/places`);
     }catch(err){}
@@ -80,6 +83,7 @@ const NewPlace = () => {
       >
         Title :
       </Input>
+      <ImageUploader id="placeImage" onInput={inputHandler}/>
       <Input
         element="textarea"
         errorMsg="Please enter a valid Description(at least 5 characters)"
@@ -100,7 +104,7 @@ const NewPlace = () => {
         onInput={inputHandler}
         validators={[VALIDATOR_REQUIRE()]}
       >
-        Description :
+        Address :
       </Input>
       <Button type="submit" disabled={!formState.isFormValid}>
         Add Place

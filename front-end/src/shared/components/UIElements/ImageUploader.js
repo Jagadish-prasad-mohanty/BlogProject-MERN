@@ -36,7 +36,7 @@ function ImageUploader(props) {
       setIsValid(false);
       fileIsValid = false;
     }
-    props.onInput(file,fileIsValid,props.id );
+    props.onInput(file,fileIsValid,props.id);
   };
   return (
     <div>
@@ -59,7 +59,7 @@ function ImageUploader(props) {
           Pick Image
         </Button>
       </div>
-      {!isValid && <p>{props.errorMsg}</p>}
+      {!isValid && <p>{props.errorMsg || "Please add a valid Image!"}</p>}
     </div>
   );
 }

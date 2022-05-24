@@ -13,7 +13,7 @@ function PlaceList(props) {
     <Button to="/places/new">ADD PLACE</Button>
     </Card>
 }
-    const placeList=props.items.map(place=><PlaceItem key={place.id} id={place.id} image={place.imageURL} address={place.address} description={place.description} deletePlace={props.deletePlace} cordinate={place.location} creator={place.creator}/>)
+    const placeList=props.items.map(place=><PlaceItem key={place.id} id={place.id} image={place.image} address={place.address} description={place.description} deletePlace={props.deletePlace} cordinate={place.location} creator={place.creator}/>)
 
   return (
     <ul className='place-list'>

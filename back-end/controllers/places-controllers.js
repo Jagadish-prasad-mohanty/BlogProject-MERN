@@ -158,7 +158,7 @@ const postCreatePlace=async(req,res,next)=>{
                 lat:coordinates[0],
                 lng:coordinates[0]
             },
-            image:"https://lh5.googleusercontent.com/p/AF1QipMIQe3sxO0i4GxrzhEAtD6t9ihVTvoGeXJo2gCJ=w408-h272-k-no",
+            image:req.file.path,
             description,
             creator
         };

@@ -42,12 +42,14 @@ const postSignUpUser= async (req,res,next)=>{
         return next(error);
     }
     console.log(checkUser)
+    console.log("user-controllers.js -> filePath",req.file.path);
+
     if (!checkUser){
         const newUser={
             name,
             email,
             password,
-            image:"https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cGVyc29uJTIwd2l0aCUyMGdsYXNzZXN8ZW58MHx8MHx8&w=1000&q=80",
+            image:req.file.path,
             places:[]
         };
 
