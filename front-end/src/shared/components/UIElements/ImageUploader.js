@@ -49,7 +49,7 @@ function ImageUploader(props) {
         onChange={pickHandler}
       />
 
-      <div className="image-upload center">
+      <div className="image-upload">
         <div className="image-upload__preview">
           {imagePreview && <img src={imagePreview} alt="Preview" />}
           {!imagePreview && <img src="" alt="Please add a file" />}

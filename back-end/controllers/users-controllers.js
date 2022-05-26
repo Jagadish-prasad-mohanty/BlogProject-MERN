@@ -1,17 +1,12 @@
 const uuid=require("uuid/v4");
 const {validationResult}=require('express-validator')
+const bcrypt= require('bcryptjs');
+const jwt= require("jsonwebtoken");
 
 const User= require("../models/user");
 const HttpError = require("../models/http-error");
 
-const DEMO_USERS=[
-    {
-        id:"u1",
-        name:"Jagadish Mohanty",
-        email:"mohantyjagadihs@gmail.com",
-        password:"123456"
-    }
-]
+
 
 const getUsers= async (req,res,next)=>{
     let users;
@@ -44,30 +39,54 @@ const postSignUpUser= async (req,res,next)=>{
     console.log(checkUser)
     console.log("user-controllers.js -> filePath",req.file.path);
 
-    if (!checkUser){
-        const newUser={
-            name,
-            email,
-            password,
-            image:req.file.path,
-            places:[]
-        };
+    let bcryptedPassword;
+    try{
+        bcryptedPassword= await bcrypt.hash(password,12);
+    }catch(err){
+        const error= new HttpError("Unable to create user, Please try again.",500);
+        return next(error);
+    }
 
-        const user= new User(newUser);
-        try{
-            await user.save()
-        }catch(err){
+    if (!checkUser){
+        console.log("User already exist.")
+        const err= new HttpError("User already exist, please login instead.",422);
+        return next(err);
+    }
+    const newUser={
+        name,
+        email,
+        password:bcryptedPassword,
+        image:req.file.path,
+        places:[]
+    };
+
+    const user= new User(newUser);
+    try{
+        await user.save()
+    }catch(err){
             console.log(err)
             const error= new HttpError("Something went wrong, Unable to signup.",500)
             return next(error);
-        }
-        return res.status(200).json({user:user.toObject({getters:true})});
     
-    }else{
-        console.log("User already exist.")
-        const err= new HttpError("User already exist, please login instead.",422);
-        next(err);
     }
+
+    let token;
+    try{
+        token= jwt.sign({userId:checkUser.id,email:checkUser.email},
+            "superconfidential_dont_share",
+            {expiresIn:"1h"})
+    }catch(err){
+        console.log(err)
+        const error= new HttpError("Something went wrong, Unable to signup.",500)
+        return next(error); 
+    }
+
+
+    return res.status(200).json({userId:checkUser.id,email:checkUser.email,token:token});
+
+    
+        
+    
     
 }
 const postLogInUser= async (req,res,next)=>{
@@ -76,15 +95,29 @@ const postLogInUser= async (req,res,next)=>{
     try{
         checkUser=await User.findOne({email:email});
     }catch(err){
-        const error= new HttpError("Something went wrong!!",500);
+        const error= new HttpError("Loggin failed, Please try again later.",500);
         return next(error);
     }
     console.log(checkUser);
-    if (checkUser && checkUser.password===password){
-        return res.status(200).json({userId:checkUser.id});
+    if (!checkUser ){
+        const err= new HttpError("Wrong email id or password, Could not log you in.",401);
+        return next(err);
     }
-    const err= new HttpError("Wrong emailid or password, Could not log you in.",401);
-    next(err);
+
+    let isValidPass=false;
+    try{
+
+        isValidPass=await bcrypt.compare(password,checkUser.password)
+    }catch(err){
+
+        const error= new HttpError("Loggin failed, Please try again later.",500);
+        return next(error);
+    }
+    if (!isValidPass){
+        const err= new HttpError("Wrong email id or password, Could not log you in.",401);
+        return next(err);
+    }
+    return res.status(200).json({message:"Logged in!",userId:checkUser.id});
     
 }
 

@@ -1,6 +1,6 @@
 const {validationResult}=require('express-validator');
 const mongoose = require('mongoose');
-
+const fs= require('fs');
 
 const Place= require("../models/place");
 const User= require("../models/user");
@@ -76,6 +76,7 @@ const patchDeletePlaceById=async (req,res,next)=>{
         return next(error);
     }
     console.log("place : ",place);
+    const imagePath=place.image;
     // let user;
     // try{
     //     user= await User.findById(place.creator);
@@ -102,6 +103,9 @@ const patchDeletePlaceById=async (req,res,next)=>{
         // as it is a async task
         return next(error); 
     }
+    fs.unlink(imagePath,err=>{
+        console.log(err);
+    });
     res.status(200).json({message:"Deletion Done"});
 }
 
