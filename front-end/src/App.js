@@ -16,7 +16,7 @@ import UpdatePlace from './places/pages/UpdatePlace';
 import Authnticate from './user/pages/Authnticate';
 
 const App = () => {
-  const userId=useSelector(state=>state.auth.currentUserId);
+  const token=useSelector(state=>state.auth.currentToken);
   return (
     <Router>
       <MainNavigation />
@@ -25,16 +25,16 @@ const App = () => {
           <Route path="/" exact>
             <Users />
           </Route>
-          {userId &&<Route path="/places/new" >
+          {token &&<Route path="/places/new" >
             <NewPlace />
           </Route>}
-          {userId &&<Route path="/places/:placeId" >
+          {token &&<Route path="/places/:placeId" >
             <UpdatePlace/>
           </Route>}
           <Route path="/:userId/places">
             <UserPlaces/>
           </Route>
-          {!userId && <Route path="/auth">
+          {!token && <Route path="/auth">
             <Authnticate/>
           </Route>}
           <Redirect to="/" />

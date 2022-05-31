@@ -20,6 +20,7 @@ import ImageUploader from "../../shared/components/UIElements/ImageUploader";
 const NewPlace = () => {
   const {isLoading,error,sendRequest,clearError}= useHttpClient();
   const userId=useSelector(state=>state.auth.currentUserId);
+  const token=useSelector(state=>state.auth.currentToken);
   const history = useHistory();
   const {formState, inputHandler} =useFormHook({
     inputs: {
@@ -46,15 +47,22 @@ const NewPlace = () => {
   const onCreatePlace= async (e)=>{
     e.preventDefault();
     const formData=new FormData();
+    ///simple append the required json data,
+    // key as 1st arg and value as 2nd arg in the .append()
+    // formState is used to manage the state 
     formData.append("title",formState.inputs.title.value);
     formData.append("placeImage",formState.inputs.placeImage.value);
     formData.append("description",formState.inputs.description.value);
     formData.append("address",formState.inputs.address.value);
     formData.append("creator",userId);
+
     try{
       await sendRequest("http://localhost:5000/api/places",
       "POST",
-      formData
+      formData,
+      {
+        Authorization:"Bearer "+token
+      }
       )
       history.push(`/${userId}/places`);
     }catch(err){}

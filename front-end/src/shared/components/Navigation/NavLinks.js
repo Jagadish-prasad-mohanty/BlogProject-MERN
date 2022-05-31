@@ -6,6 +6,7 @@ import './NavLinks.css';
 import { logOutHandler } from '../../store/actions/auth-action';
 
 const NavLinks = props => {
+  const token=useSelector(state=>state.auth.currentToken);
   const userId=useSelector(state=>state.auth.currentUserId);
   const dispatch=useDispatch();
   const history= useHistory();
@@ -13,16 +14,16 @@ const NavLinks = props => {
     <li>
       <NavLink to="/" exact>ALL USERS</NavLink>
     </li>
-    {userId && <li>
+    {token && <li>
       <NavLink to={`/${userId}/places`}>MY PLACES</NavLink>
     </li>}
-    {userId && <li>
+    {token && <li>
       <NavLink to="/places/new">ADD PLACE</NavLink>
     </li>}
-    {!userId && <li>
+    {!token && <li>
       <NavLink to="/auth">AUTHENTICATE</NavLink>
     </li>}
-    {userId && <li>
+    {token && <li>
       <button onClick={()=>{
         dispatch(logOutHandler());
         history.push("/auth")

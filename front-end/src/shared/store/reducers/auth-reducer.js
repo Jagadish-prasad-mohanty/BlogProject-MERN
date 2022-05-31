@@ -1,6 +1,7 @@
 
 const initialState={
     currentUserId:null,
+    currentToken:null
 }
 
 const authReducer= (state=initialState,action)=>{
@@ -8,12 +9,15 @@ const authReducer= (state=initialState,action)=>{
         case "LOG_IN":
                 return {
                  ...state,
-                 currentUserId:action.userData.id
+                 currentUserId:action.userData.id,
+                 currentToken:action.userData.token,
+
                 }
         case "LOG_OUT":
                 return {
                     ...state,
-                    currentUserId:null
+                    currentUserId:null,
+                    currentToken:null
                 }
         default:
             return state;

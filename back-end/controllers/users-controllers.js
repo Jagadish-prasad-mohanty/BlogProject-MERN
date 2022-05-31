@@ -36,7 +36,13 @@ const postSignUpUser= async (req,res,next)=>{
         const error= new HttpError("Signup failed, Please try again later!!",500);
         return next(error);
     }
-    console.log(checkUser)
+    console.log(checkUser);
+    if (checkUser){
+        console.log("User already exist.")
+        const err= new HttpError("User already exist, please login instead.",422);
+        return next(err);
+    }
+
     console.log("user-controllers.js -> filePath",req.file.path);
 
     let bcryptedPassword;
@@ -47,11 +53,7 @@ const postSignUpUser= async (req,res,next)=>{
         return next(error);
     }
 
-    if (!checkUser){
-        console.log("User already exist.")
-        const err= new HttpError("User already exist, please login instead.",422);
-        return next(err);
-    }
+    
     const newUser={
         name,
         email,
@@ -72,7 +74,7 @@ const postSignUpUser= async (req,res,next)=>{
 
     let token;
     try{
-        token= jwt.sign({userId:checkUser.id,email:checkUser.email},
+        token= jwt.sign({userId:newUser.id,email:newUser.email},
             "superconfidential_dont_share",
             {expiresIn:"1h"})
     }catch(err){
@@ -82,7 +84,7 @@ const postSignUpUser= async (req,res,next)=>{
     }
 
 
-    return res.status(200).json({userId:checkUser.id,email:checkUser.email,token:token});
+    return res.status(200).json({userId:newUser.id,email:newUser.email,token:token});
 
     
         
@@ -117,7 +119,19 @@ const postLogInUser= async (req,res,next)=>{
         const err= new HttpError("Wrong email id or password, Could not log you in.",401);
         return next(err);
     }
-    return res.status(200).json({message:"Logged in!",userId:checkUser.id});
+
+    let token;
+    try{
+        token= jwt.sign({userId:checkUser.id,email:checkUser.email},
+            "superconfidential_dont_share",
+            {expiresIn:"1h"})
+    }catch(err){
+        console.log(err)
+        const error= new HttpError("Something went wrong, Unable to loggedin.",500)
+        return next(error); 
+    }
+
+    return res.status(200).json({message:"Logged in!",userId:checkUser.id,email:checkUser.email,token:token});
     
 }
 

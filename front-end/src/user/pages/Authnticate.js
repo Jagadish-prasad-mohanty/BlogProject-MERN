@@ -92,7 +92,7 @@ function Authnticate() {
             );
            
             
-            dispatch(logInHandler({id:responseData.userId}))
+            dispatch(logInHandler({id:responseData.userId,token:responseData.token}));
           }catch(err){
           }
           
