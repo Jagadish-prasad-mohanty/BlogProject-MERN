@@ -5,12 +5,14 @@ import ErrorModal from '../../shared/components/UIElements/ErrorModal';
 import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
 import PlaceList from '../components/PlaceList';
 import useHttpClient from '../../shared/hook/http-hook';
+import { useSelector } from 'react-redux';
 
 function UserPlaces() {
     const userId=useParams().userId;
     const [userPlaces,setUserPlaces]=useState([]);
     const history= useHistory();
     const {isLoading,error,sendRequest,clearError}= useHttpClient();
+    const token= useSelector(state=>state.auth.currentToken);
 
     useEffect(()=>{
                
@@ -30,7 +32,8 @@ function UserPlaces() {
             "DELETE",
             null,
             {
-                "Content-Type":"application/json"
+                "Content-Type":"application/json",
+                Authorization:"Bearer "+token
             }
         ).then(responseData=>{
             console.log(responseData);

@@ -98,10 +98,10 @@ const patchDeletePlaceById=async (req,res,next)=>{
         await sess.commitTransaction();  // Commit all the changes
     }catch(err){
         // console.log(err);
-        const error= new HttpError("Something went wrong, Unable to delete place3.");
-        // Rather than using throw Error use next(error)
-        // as it is a async task
-        return next(error); 
+        // const error= new HttpError("Something went wrong, Unable to delete place3.");
+        // // Rather than using throw Error use next(error)
+        // // as it is a async task
+        // return next(error); 
     }
     fs.unlink(imagePath,err=>{
         console.log(err);
@@ -176,8 +176,8 @@ const postCreatePlace=async(req,res,next)=>{
             await sess.commitTransaction()
         }catch(err){
             console.log(err)
-            const error=new HttpError("Could not able to create place, Try again!!",404);
-            return next(error);
+            // const error=new HttpError("Could not able to create place, Try again!!",404);
+            // return next(error);
         }
         res.status(201).json({place:place});
     });

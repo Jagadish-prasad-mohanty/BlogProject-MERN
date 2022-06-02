@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useReducer, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
+import {useSelector} from 'react-redux';
 
 import Button from "../../shared/components/FormElements/Button";
 import Input from "../../shared/components/FormElements/Input";
@@ -51,6 +52,7 @@ const UpdatePlace = () => {
   const [loading,setLoading]= useState(true);
   const history= useHistory();
   const {isLoading,error,sendRequest,clearError} = useHttpClient();
+  const token= useSelector(state=>state.auth.currentToken);
 
   const {formState, inputHandler,initiateForm} =useFormHook({
     inputs: {
@@ -105,6 +107,7 @@ const UpdatePlace = () => {
       }),
       {
         "Content-Type":"application/json",
+        Authorization:"Bearer "+ token
       }
     ).then(responseData=>{
       history.push('/');
