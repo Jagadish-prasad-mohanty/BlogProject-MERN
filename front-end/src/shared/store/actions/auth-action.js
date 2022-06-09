@@ -9,5 +9,6 @@ export const signUpHandler= (user)=>{
     return {type:SIGN_UP,userData:user}
 }
 export const logOutHandler= ()=>{
+    localStorage.removeItem('userData');
     return {type:LOG_OUT}
 }

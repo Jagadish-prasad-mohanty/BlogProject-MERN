@@ -58,6 +58,11 @@ const patchUpdatePlaceById=async (req,res,next)=>{
         const error= new HttpError("Something went wrong, Unable to save record.")
         return next(error);
     }
+    console.log(place.creator.toString(),res.userData.userId)
+    if (place.creator.toString() !== res.userData.userId){
+        const error= new HttpError("Not Authorized User!!");
+        return next(error);
+    }
     res.status(200).json({place:place.toObject({getters:true})});
 }
 const patchDeletePlaceById=async (req,res,next)=>{
@@ -102,6 +107,11 @@ const patchDeletePlaceById=async (req,res,next)=>{
         // // Rather than using throw Error use next(error)
         // // as it is a async task
         // return next(error); 
+    }
+    console.log(place.creator.id,res.userData.userId);
+    if (place.creator.id !== res.userData.userId){
+        const error= new HttpError("Not Authorized User!!");
+        return next(error);
     }
     fs.unlink(imagePath,err=>{
         console.log(err);

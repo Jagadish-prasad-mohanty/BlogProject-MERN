@@ -91,7 +91,11 @@ function Authnticate() {
               
             );
            
-            
+            localStorage.setItem("userData",JSON.stringify({
+              id:responseData.userId,
+              token:responseData.token,
+              expTime:new Date().getTime()+5*1000
+            }))
             dispatch(logInHandler({id:responseData.userId,token:responseData.token}));
           }catch(err){
           }
