@@ -42,11 +42,16 @@ app.use((error,req,res,next)=>{
     res.status(error.code || 500);
     res.json({message:error.message || "Some unknown Error occured"})
 });
-
-mongoose.connect("mongodb+srv://Jagadish123:Mohantym90%40@cluster0.ywlsa.mongodb.net/places?retryWrites=true&w=majority").then((response)=>{
+// console.log(process.env)
+mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.ywlsa.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`).then((response)=>{
     console.log("Connected with database successfully");
+    app.listen(process.env.PORT || 5000);
 }).catch((error)=>{
     console.log("Unable to connect with database.")
 });
 
-app.listen(5000);
+
+
+// `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.ywlsa.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`
+
+// `mongodb+srv://Jagadish123:Mohantym90%40@cluster0.ywlsa.mongodb.net/places?retryWrites=true&w=majority`

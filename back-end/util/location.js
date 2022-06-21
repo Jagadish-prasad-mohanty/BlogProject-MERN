@@ -1,5 +1,5 @@
 const axios=require('axios')
-const key="ed8602b2284fc55b61119d12eb85360e";
+const key=process.env.LOCATION_API_KEY;
 
 const findGeoCode= async(address)=>{
     const response=await axios.get(`http://api.positionstack.com/v1/forward?access_key=ed8602b2284fc55b61119d12eb85360e&query=${address}`);

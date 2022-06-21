@@ -78,7 +78,7 @@ function Authnticate() {
           console.log("isSignIn",isSignIn)
           try{
 
-            const responseData=await sendRequest("http://localhost:5000/api/users/signin",
+            const responseData=await sendRequest(process.env.REACT_APP_BACKEND_URL+"/users/signin",
             
               "POST",
               JSON.stringify({
@@ -111,7 +111,7 @@ function Authnticate() {
           formData.append("profileImage",formState.inputs.profileImage.value);
           try{
 
-            const responseData= await sendRequest("http://localhost:5000/api/users/signup",
+            const responseData= await sendRequest(process.env.REACT_APP_BACKEND_URL+"/users/signup",
             
               "POST",
               formData,

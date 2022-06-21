@@ -75,7 +75,7 @@ const postSignUpUser= async (req,res,next)=>{
     let token;
     try{
         token= jwt.sign({userId:newUser.id,email:newUser.email},
-            "superconfidential_dont_share",
+            process.env.JWT_KEY,
             {expiresIn:"1h"})
     }catch(err){
         console.log(err)
@@ -123,7 +123,7 @@ const postLogInUser= async (req,res,next)=>{
     let token;
     try{
         token= jwt.sign({userId:checkUser.id,email:checkUser.email},
-            "superconfidential_dont_share",
+            process.env.JWT_KEY,
             {expiresIn:"1h"})
     }catch(err){
         console.log(err)

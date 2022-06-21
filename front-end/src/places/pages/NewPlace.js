@@ -57,7 +57,7 @@ const NewPlace = () => {
     formData.append("creator",userId);
 
     try{
-      await sendRequest("http://localhost:5000/api/places",
+      await sendRequest(process.env.REACT_APP_BACKEND_URL+"/places",
       "POST",
       formData,
       {

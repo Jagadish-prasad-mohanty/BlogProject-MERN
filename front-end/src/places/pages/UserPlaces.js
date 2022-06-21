@@ -16,7 +16,7 @@ function UserPlaces() {
 
     useEffect(()=>{
                
-        sendRequest(`http://localhost:5000/api/places/user/${userId}`).then(responseData=>{
+        sendRequest(process.env.REACT_APP_BACKEND_URL+`/places/user/${userId}`).then(responseData=>{
 
             console.log(responseData);
             setUserPlaces(responseData.userPlace);
@@ -28,7 +28,7 @@ function UserPlaces() {
     const deletePlaceHandler =(placeId)=>{
         console.log(placeId)
         
-        sendRequest(`http://localhost:5000/api/places/${placeId}`,
+        sendRequest(process.env.REACT_APP_BACKEND_URL+`/places/${placeId}`,
             "DELETE",
             null,
             {

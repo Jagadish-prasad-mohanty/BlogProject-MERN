@@ -1,0 +1,9 @@
+{
+    "env": {
+        "DB_USER" : "Jagadish123",
+        "DB_PASSWORD": "Mohantym90%40",
+        "DB_NAME" : "places",
+        "LOCATION_API_KEY":"ed8602b2284fc55b61119d12eb85360e",
+        "JWT_KEY":"superconfidential_dont_share"
+    }
+}

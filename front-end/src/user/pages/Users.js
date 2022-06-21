@@ -19,7 +19,7 @@ const Users = () => {
   useEffect(()=>{
     
      
-      sendRequest("http://localhost:5000/api/users").then((responseData)=>{
+      sendRequest(process.env.REACT_APP_BACKEND_URL+"/users").then((responseData)=>{
 
         console.log("response data",responseData);
         setUsers(responseData.users);
